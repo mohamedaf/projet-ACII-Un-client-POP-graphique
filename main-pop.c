@@ -21,6 +21,9 @@ void verif_regexp()
   if (regcomp(&re_quit, _RE_QUIT, REG_EXTENDED)) {
       peroraison("_RE_QUIT", "mauvaise regexp", 1);
   }
+  if (regcomp(&re_content_type, _RE_CONTENT_TYPE, REG_EXTENDED)) {
+      peroraison("_RE_CONTENT_TYPE", "mauvaise regexp", 1);
+  }
 }
 
 int main(int argc, char* argv[])

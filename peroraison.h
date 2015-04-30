@@ -26,8 +26,9 @@
 #define _RE_TOP  "^TOP +([0-9]+) +([0-9]+) *$"
 #define _RE_RETR "^RETR +([0-9]+) *$"
 #define _RE_QUIT "^QUIT *$"
+#define _RE_CONTENT_TYPE "^Content-Type: (.+)/([a-zA-Z]+)"
 
-regex_t re_user, re_pass, re_list, re_top, re_retr, re_quit;
+regex_t re_user, re_pass, re_list, re_top, re_retr, re_quit, re_content_type;
 
 extern char argv0[128];
 extern int InitConnexion(char *, int);
