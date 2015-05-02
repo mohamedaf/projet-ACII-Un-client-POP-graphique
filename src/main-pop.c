@@ -1,4 +1,4 @@
-#include "peroraison.h"
+#include <peroraison.h>
 
 /* Fonction compilant toutes les regexp definies dans peroraison.h */
 void verif_regexp()

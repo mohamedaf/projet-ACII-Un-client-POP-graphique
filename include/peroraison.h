@@ -5,9 +5,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <X11/Xutil.h>
+//#include <X11/Xlib.h>
+//#include <X11/Xatom.h>
+//#include <X11/Xutil.h>
 #include <regex.h>
 #include <sys/socket.h>		/* pour socket */
 #include <netinet/in.h>		/* pour sockaddr_in et INET_ADDRSTRLEN */

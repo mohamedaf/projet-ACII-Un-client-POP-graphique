@@ -1,20 +1,25 @@
-GCC_FLAGS = -Wall
-all: application
+CC =gcc -Wall
+BIN=bin
+INC=include
+OBJ=obj
+SRC=src
 
-peroraison.o	: peroraison.c peroraison.h
-	gcc $(GCC_FLAGS) -c peroraison.c peroraison.h
+all: ${BIN}/application
 
-InitConnexion.o	: InitConnexion.c peroraison.h
-	gcc $(GCC_FLAGS) -c InitConnexion.c peroraison.h
+$(OBJ)/peroraison.o	: $(SRC)/peroraison.c ${INC}/peroraison.h
+	gcc $(GCC_FLAGS) -c -o $(OBJ)/peroraison.o $(SRC)/peroraison.c -I${INC}
 
-textuel-pop.o	: textuel-pop.c peroraison.h
-	gcc $(GCC_FLAGS) -c textuel-pop.c peroraison.h
+$(OBJ)/InitConnexion.o	: $(SRC)/InitConnexion.c ${INC}/peroraison.h
+	gcc $(GCC_FLAGS) -c -o $(OBJ)/InitConnexion.o $(SRC)/InitConnexion.c -I${INC}
 
-main-pop.o	: main-pop.c peroraison.h
-	gcc $(GCC_FLAGS) -c main-pop.c peroraison.h
+$(OBJ)/textuel-pop.o	: $(SRC)/textuel-pop.c ${INC}/peroraison.h
+	gcc $(GCC_FLAGS) -c -o $(OBJ)/textuel-pop.o $(SRC)/textuel-pop.c -I${INC}
 
-application	: main-pop.o peroraison.o InitConnexion.o textuel-pop.o
-	gcc $(GCC_FLAGS) -o application main-pop.o peroraison.o InitConnexion.o textuel-pop.o
+$(OBJ)/main-pop.o	: $(SRC)/main-pop.c ${INC}/peroraison.h
+	gcc $(GCC_FLAGS) -c -o $(OBJ)/main-pop.o $(SRC)/main-pop.c -I${INC}
+
+$(BIN)/application	: $(OBJ)/main-pop.o $(OBJ)/peroraison.o $(OBJ)/InitConnexion.o $(OBJ)/textuel-pop.o
+	gcc $(GCC_FLAGS) -o $(BIN)/application $(OBJ)/main-pop.o $(OBJ)/peroraison.o $(OBJ)/InitConnexion.o $(OBJ)/textuel-pop.o
 
 clean	:
-	rm -f *.o *.gch application
+	rm -f ${OBJ}/* ${BIN}/* ${INC}/*.gch

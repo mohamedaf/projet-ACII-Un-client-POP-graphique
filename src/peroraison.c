@@ -1,4 +1,4 @@
-#include "peroraison.h"
+#include <peroraison.h>
 
 char argv0[128]="";
 

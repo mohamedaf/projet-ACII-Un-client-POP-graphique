@@ -1,4 +1,4 @@
-#include "peroraison.h"
+#include <peroraison.h>
 
 
 void textuel_pop(int sock)
@@ -56,75 +56,92 @@ void textuel_pop(int sock)
 
       write(sock, message, strlen(message));
 
-      //recuperer le numero du message
-      int contentType = 0;
-      char *ligne;
-
       /* lecture et affichage de la reponse du serveur */
       read(sock, answer, MESSAGELENGTH);
-      printf("%s\n", answer);
+      printf("%s", answer);
 
-      /* Traitement pour la commande RETR */
-      ligne = strdup(answer);
+      FILE *f;
+      const char * ligne = answer;
+      int contentType=0, multipart=0, debmess=0, mess=0, c=0;
 
-      ligne = strtok(ligne, "\n");
+      while(ligne){
+	char * nextLine = strchr(ligne, '\n');
+	// temporarily terminate the current line
+	if (nextLine) *nextLine = '\0';
 
-      int multipart=0;
-
-      do{
-	if(!regexec(&re_content_type, ligne, 3, matches, 0)){
+	if(mess){
+	  if(!strcmp(ligne,"") && !debmess){
+	    debmess=1;
+	  }
+	  else if(!strcmp(ligne,"") && debmess){
+	    fclose(f);
+	    mess=0;
+	    debmess=0;
+	    contentType=0;
+	  }
+	  else if(debmess){
+	    fputs(ligne, f);
+	  }
+	}
+	else if(!regexec(&re_content_type, ligne, 3, matches, 0)){
 	  /* Entete Content-Type de type multipart */
 	  contentType = 1;
-
-	  if(!strncmp(ligne+matches[1].rm_so, "multipart", matches[1].rm_eo-matches[1].rm_so)){
-	    printf("ligne : %s\n", ligne);
-
+	  
+	  if(!strncmp(ligne+matches[1].rm_so, "multipart",
+		      matches[1].rm_eo-matches[1].rm_so)){
+	    
 	    if(mkdir(s, 0777) == -1){
 	      peroraison("fichier textuel-pop.c : fonction textuel_pop : cas RETR multipart",
 			 "erreur creation repertoire multipart\n",1);
 	    }
 	    multipart = 1;
-	    continue;
 	  }
 	  else{
-	    printf("ligne : %s\n", ligne);
-
 	    char *s2, *s3;
 	    /* recuperer l'extension */
 	    s2 = strndup(ligne+matches[2].rm_so, matches[2].rm_eo-matches[2].rm_so);
 	    s3 = strdup(s);
 	    strcat(s3, s2);
 	    strcat(s3, ".txt");
-
-	    printf("extension : %s\n", s2);
-
-	    FILE *f;
-
+	    
 	    if(multipart){
 	      char *s4;
 
 	      s4 = strdup(s);
 	      strcat(s4, "/");
-	      strcat(s4, s);
+	      strcat(s4, s3);
 	      f = fopen(s4, "w+");
 	    }
 	    else
-	      f = fopen(s, "w+");
-
-	    fputs(answer, f);
-	    fclose(f);
+	      f = fopen(s3, "w+");
+	    
+	    mess=1;
 	  }
-
 	}
-      }while((ligne = strtok(NULL, "\n")));
-
-      if(!contentType){
-	/* pas de Content-Type dans la reponse recu du serveur
-	   on stocke donc le message dans un fichier "num-message.txt" */
-	strcat(s, ".txt");
-	FILE *f = fopen(s, "w+");
-	fputs(answer, f);
-	fclose(f);
+	else if(!contentType){
+	  if(!strcmp(ligne,"") && !debmess){
+	    c=1;
+	    debmess=1;
+	  }
+	  else if(!strcmp(ligne,"") && debmess){
+	    fclose(f);
+	    debmess=0;
+	  }
+	  else if(strcmp(ligne,".") && debmess){
+	    if(c){
+	      /* pas de Content-Type dans la reponse recu du serveur
+	       on stocke donc le message dans un fichier "num-message.txt" */
+	      strcat(s, ".txt");
+	      f = fopen(s, "w+");
+	      c=0;
+	    }
+	    fputs(ligne, f);
+	  }
+	}
+	
+	// then restore newline-char, just to be tidy
+	if (nextLine) *nextLine = '\n';   
+	ligne = nextLine ? (nextLine+1) : NULL;
       }
 
       /* vider la chaine de reponse */
@@ -146,7 +163,7 @@ void textuel_pop(int sock)
 
     /* lecture et affichage de la reponse du serveur */
     read(sock, answer, MESSAGELENGTH);
-    printf("%s\n", answer);
+    printf("%s", answer);
 
     /* vider la chaine de reponse */
     memset (answer, '\0', MESSAGELENGTH);
