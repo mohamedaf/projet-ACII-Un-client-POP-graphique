@@ -23,7 +23,7 @@
 #define _RE_USER "^USER +([a-zA-Z0-9\\._]+@[a-zA-Z0-9\\.]*[^\\.][^\\.]) *$"
 #define _RE_PASS "^PASS +(.*) *$"
 #define _RE_LIST "^LIST *$"
-#define _RE_TOP  "^TOP +([0-9]+) +([0-9]+) *$"
+#define _RE_TOP  "^TOP +([0-9]+) *$"
 #define _RE_RETR "^RETR +([0-9]+) *$"
 #define _RE_QUIT "^QUIT *$"
 #define _RE_CONTENT_TYPE "^Content-Type: (.+)/([a-zA-Z]+)"
