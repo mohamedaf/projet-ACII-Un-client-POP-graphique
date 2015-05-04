@@ -17,6 +17,8 @@
 #include <time.h>		/* clair */
 #include <string.h>		// pour strcmp
 
+#define MARGIN 10
+#define BORDER 2
 #define LINELENGTH 1024
 #define MESSAGELENGTH 100000
 
@@ -34,5 +36,12 @@ extern char argv0[128];
 extern int InitConnexion(char *, int);
 extern void peroraison (char *f, char *m, int n);
 extern void verif_regexp();
+/************** Partie 1 -t ****************/
 extern void textuel_pop(int sock);
-
+/************** Partie 2 -c ****************/
+extern void clicable_pop();
+extern void fExposeEvent(XExposeEvent *e);
+extern void fButtonPress(XButtonEvent *e);
+extern void fKeyPress (XKeyEvent *e);
+extern void clean(Window w);
+/************** Partie 3 -g ****************/
