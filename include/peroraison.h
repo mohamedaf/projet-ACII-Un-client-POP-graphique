@@ -38,6 +38,7 @@ extern void peroraison (char *f, char *m, int n);
 extern void verif_regexp();
 /************** Partie 1 -t ****************/
 extern void textuel_pop(int sock);
+extern void traitement_RETR(char* answer, char* s);
 /************** Partie 2 -c ****************/
 extern void clicable_pop(int sock);
 extern void fExposeEvent(XExposeEvent *e);
@@ -47,4 +48,7 @@ extern void clean(Window w);
 extern void cleanfenErr();
 extern char* submit(int sock);
 extern void ListAndTop(int sock);
+extern void Top(int sock, char* answer, int nbMessages);
+extern void TopAffichage(int nbMessages);
+extern void RETR(int sock, int numMessage);
 /************** Partie 3 -g ****************/

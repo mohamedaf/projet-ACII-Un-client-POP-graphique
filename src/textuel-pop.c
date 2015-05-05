@@ -6,12 +6,12 @@ void traitement_RETR(char* answer, char* s)
   regmatch_t matches[3];
   const char * ligne = answer;
   int contentType=0, multipart=0, debmess=0, mess=0, c=0;
-  
+
   while(ligne){
     char * nextLine = strchr(ligne, '\n');
     // temporarily terminate the current line
     if (nextLine) *nextLine = '\0';
-    
+
     if(mess){
       if(!strcmp(ligne,"") && !debmess){
 	debmess=1;
@@ -29,10 +29,10 @@ void traitement_RETR(char* answer, char* s)
     else if(!regexec(&re_content_type, ligne, 3, matches, 0)){
       /* Entete Content-Type de type multipart */
       contentType = 1;
-      
+
       if(!strncmp(ligne+matches[1].rm_so, "multipart",
 		  matches[1].rm_eo-matches[1].rm_so)){
-	
+
 	if(mkdir(s, 0777) == -1){
 	  peroraison("fichier textuel-pop.c : fonction textuel_pop : cas RETR multipart",
 		     "erreur creation repertoire multipart\n",1);
@@ -46,10 +46,10 @@ void traitement_RETR(char* answer, char* s)
 	s3 = strdup(s);
 	strcat(s3, s2);
 	strcat(s3, ".txt");
-	
+
 	if(multipart){
 	  char *s4;
-	  
+
 	  s4 = strdup(s);
 	  strcat(s4, "/");
 	  strcat(s4, s3);
@@ -57,7 +57,7 @@ void traitement_RETR(char* answer, char* s)
 	}
 	else
 	  f = fopen(s3, "w+");
-	
+
 	mess=1;
       }
     }
@@ -81,9 +81,12 @@ void traitement_RETR(char* answer, char* s)
 	fputs(ligne, f);
       }
     }
-    
+
+    if(!strcmp(ligne, "."))
+      break;
+
     // then restore newline-char, just to be tidy
-    if (nextLine) *nextLine = '\n';   
+    if (nextLine) *nextLine = '\n';
     ligne = nextLine ? (nextLine+1) : NULL;
   }
 }
