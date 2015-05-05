@@ -30,10 +30,9 @@ int main(int argc, char* argv[])
 {
 
   /* Verifier que le nombre des parametres est exact */
-  /*if(argc > 4 || argc < 4)
+  if(argc > 4 || argc < 4)
     peroraison("Nombre d'arguments incorrect",
 	       "./application option[-t,-c,-g] adresseServeur port\n", 1);
-  */
   int a=0;
 
   /* Verifier quel mode le client a demande */
@@ -54,23 +53,23 @@ int main(int argc, char* argv[])
      le second le numero du port
      cette fonction se connecte donc au serveur indiquee
      puis reenvoie la socket de connexion */
-  //int sock = InitConnexion(argv[2], atoi(argv[3]));
+  int sock = InitConnexion(argv[2], atoi(argv[3]));
 
   if(a == 1){
     /* mode textuel */
     printf("-t\n");
-    //textuel_pop(sock);
+    textuel_pop(sock);
   }
   else if(a == 2){
     /* mode clicable */
     printf("-c\n");
-    clicable_pop();
+    clicable_pop(sock);
   }
   else if(a == 3){
     /* mode graphique */
     /* TODO */
   }
 
-  //close(sock);
+  close(sock);
   exit(0);
 }

@@ -39,9 +39,10 @@ extern void verif_regexp();
 /************** Partie 1 -t ****************/
 extern void textuel_pop(int sock);
 /************** Partie 2 -c ****************/
-extern void clicable_pop();
+extern void clicable_pop(int sock);
 extern void fExposeEvent(XExposeEvent *e);
-extern void fButtonPress(XButtonEvent *e);
+extern void fButtonPress(XButtonEvent *e, int sock);
 extern void fKeyPress (XKeyEvent *e);
 extern void clean(Window w);
+extern int submit(int sock);
 /************** Partie 3 -g ****************/
