@@ -44,5 +44,7 @@ extern void fExposeEvent(XExposeEvent *e);
 extern void fButtonPress(XButtonEvent *e, int sock);
 extern void fKeyPress (XKeyEvent *e);
 extern void clean(Window w);
-extern int submit(int sock);
+extern void cleanfenErr();
+extern char* submit(int sock);
+extern void ListAndTop(int sock);
 /************** Partie 3 -g ****************/

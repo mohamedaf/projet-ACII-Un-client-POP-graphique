@@ -1,8 +1,8 @@
 #include <peroraison.h>
 
 Display *dpy;
-Window fen, sfen1, sfen2, sfen3, sfen4;
-int last1, last2, last3;
+Window fen, sfen1, sfen2, sfen3, sfen4, sfen5;
+int last1, last2, last3, connecte=0;
 GC gc;
 char buffer1[15], buffer2[15];
 
@@ -70,6 +70,16 @@ void clicable_pop(int sock)
 			      bgcolor.pixel,
 			      bgcolor.pixel);
 
+  XAllocNamedColor(dpy, DefaultColormap(dpy, DefaultScreen(dpy)),
+		   "black", &bgcolor, &bgcolor);
+
+  sfen5 = XCreateSimpleWindow(dpy, fen, 0, 51,
+			      599 + BORDER,
+			      20,
+			      0,
+			      bgcolor.pixel,
+			      bgcolor.pixel);
+
   /* Modifier le champ override_redirect pour les sous fenetres
      de la fenetre principale*/
   xsaw.override_redirect = True;
@@ -77,12 +87,14 @@ void clicable_pop(int sock)
   XChangeWindowAttributes(dpy, sfen2, CWOverrideRedirect, &xsaw);
   XChangeWindowAttributes(dpy, sfen3, CWOverrideRedirect, &xsaw);
   XChangeWindowAttributes(dpy, sfen4, CWOverrideRedirect, &xsaw);
+  XChangeWindowAttributes(dpy, sfen5, CWOverrideRedirect, &xsaw);
 
   /* Afin de reagir aux evenements souris et clavier */
   XSelectInput(dpy, sfen1, KeyPressMask | ButtonPressMask | ExposureMask);
   XSelectInput(dpy, sfen2, KeyPressMask | ButtonPressMask | ExposureMask);
   XSelectInput(dpy, sfen3, ButtonPressMask | ExposureMask);
   XSelectInput(dpy, sfen4, ButtonPressMask | ExposureMask);
+  XSelectInput(dpy, sfen5, ExposureMask);
 
   /* Declaration du GC */
 
@@ -130,6 +142,8 @@ void fExposeEvent(XExposeEvent *e)
 
 void fButtonPress(XButtonEvent *e, int sock)
 {
+  char *err;
+  
   if(e->window == sfen1){
     last1 = 1;
     last3 = 0;
@@ -145,37 +159,34 @@ void fButtonPress(XButtonEvent *e, int sock)
     last2 = 0;
     last3 = 1;
 
-    if(submit(sock)){
+    if((err = submit(sock))){
       /* USER ou PASS incorrect ou l'une des deux chaines est vide */
       /* On vide donc les deux champs de saisie */
+      
       clean(sfen1);
       buffer1[0] = '\0';
-
+      
       clean(sfen2);
       buffer2[0] = '\0';
 
-      XDrawString(dpy, fen, gc,
-	      100,
-	      100,
-	      "Erreur : Le nom d'utilsateur ou le mot de passe est incorrect, veuillez les resaisir.",
-	      strlen("Erreur : Le nom d'utilsateur ou le mot de passe est incorrect, veuillez les resaisir."));
+      cleanfenErr();
+      
+      XDrawString(dpy, sfen5, gc,
+		  25,
+		  10,
+		  err,
+		  strlen(err));
     }
-
-    /* Effectuer le reste des traitements TODO */
+    else{
+      /* Effectuer le reste des traitements */
+      ListAndTop(sock);
+    }
   }
   else if(e->window == sfen4){
     write(sock, "QUIT\n", 5);
     XCloseDisplay(dpy);
     exit(0);
   }
-
-  /* Debugage */
-  /*if(last1)
-    printf("clic sur fenetre 1\n");
-  else if(last2)
-    printf("clic sur fenetre 2\n");
-  else if(last3)
-  printf("clic sur fenetre 3\n");*/
 }
 
 
@@ -239,12 +250,27 @@ void clean(Window w){
   XMapWindow(dpy, w);
 }
 
-int submit(int sock){
+void cleanfenErr(){
+  XUnmapWindow(dpy, sfen5);
+
+  XClearArea(dpy, sfen5, 25,
+	     5,
+	     549,
+	     15,
+	     False);
+
+  XMapWindow(dpy, sfen5);
+}
+
+char* submit(int sock){
 
   /* Si l'une des deux chaines est vide */
   if(!strlen(buffer1) || !strlen(buffer2))
-    return 1;
+    return strdup("Erreur : Veuillez entrer un nom d'utilisateur et un mot de passe !");
 
+  if(connecte)
+    return strdup("Erreur : vous etes deja connecte sur un compte utilisateur !");
+    
   char *requete, answer[MESSAGELENGTH];
 
   requete = (char*) malloc((strlen("USER ")+strlen(buffer1)+1)*sizeof(char));
@@ -268,10 +294,31 @@ int submit(int sock){
 
   /* lecture reponse serveur */
   read(sock, answer, MESSAGELENGTH);
-
+  
   /* si probleme USER ou PASS incorrect return 1 */
-  if(!strncmp(answer, "-ERR", 4))
-    return 1;
+  if(!strncmp(answer, "+ERR", 4))
+    return strdup("Erreur : Le nom d'utilsateur ou le mot de passe est incorrect, veuillez les resaisir.");
 
-  return 0;
+  connecte=1;
+  
+  return NULL;
+}
+
+void ListAndTop(int sock)
+{
+  int nbMessages = 0;
+  char answer[MESSAGELENGTH];
+  
+  /* Envoyer la requete LIST au serveur */
+  write(sock, "LIST\n", 5);
+
+  /* Recuperer la reponse du serveur */
+  read(sock, answer, MESSAGELENGTH);
+
+  strtok(answer, "\n");
+
+  while(strcmp(strtok(NULL, "\n"), "."))
+    nbMessages++;
+
+  printf("nbMessages = %d\n", nbMessages);
 }
