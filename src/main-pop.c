@@ -40,11 +40,9 @@ int main(int argc, char* argv[])
     a=1;
   else if (!strcmp(argv[1], "-c"))
     a=2;
-  else if (!strcmp(argv[1], "-g"))
-    a=3;
 
   if(!a)
-    peroraison("Option inconnu", "option[-t,-c,-g]\n", 1);
+    peroraison("Option inconnu", "option[-t,-c]\n", 1);
 
   /* verification des expressions regulieres definies dans peroraison.h */
   verif_regexp();
@@ -64,10 +62,6 @@ int main(int argc, char* argv[])
     /* mode clicable */
     printf("-c\n");
     clicable_pop(sock);
-  }
-  else if(a == 3){
-    /* mode graphique */
-    /* TODO */
   }
 
   close(sock);

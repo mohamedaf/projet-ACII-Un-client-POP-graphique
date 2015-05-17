@@ -51,4 +51,3 @@ extern void ListAndTop(int sock);
 extern void Top(int sock, char* answer, int nbMessages);
 extern void TopAffichage(int nbMessages);
 extern void RETR(int sock, int numMessage);
-/************** Partie 3 -g ****************/

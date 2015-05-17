@@ -255,7 +255,7 @@ void fKeyPress (XKeyEvent *e)
 
   /* afficher la nouvelle chaine */
   if(last1){
-    if(e->keycode == 22){
+    if(e->keycode == 59){
       clean(sfen1);
       buffer1[strlen(buffer1)-1] = '\0';
     }
@@ -273,7 +273,7 @@ void fKeyPress (XKeyEvent *e)
     char *f = (char*) malloc(15);
     f[0] = '\0';
 
-    if(e->keycode == 22){
+    if(e->keycode == 59){
       clean(sfen2);
       buffer2[strlen(buffer2)-1] = '\0';
     }

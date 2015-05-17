@@ -28,4 +28,4 @@ $(BIN)/application	: $(OBJ)/main-pop.o $(OBJ)/peroraison.o $(OBJ)/InitConnexion.
 	$(CC) -L$L -l$l -o $(BIN)/application $(OBJ)/main-pop.o $(OBJ)/peroraison.o $(OBJ)/InitConnexion.o $(OBJ)/textuel-pop.o $(OBJ)/clicable-pop.o
 
 clean	:
-	rm -rf ${OBJ}/* ${BIN}/* ${INC}/*.gch 0
+	rm -rf ${OBJ}/* ${BIN}/* ${INC}/*.gch
