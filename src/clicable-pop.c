@@ -36,7 +36,7 @@ void clicable_pop(int sock)
   XAllocNamedColor(dpy, DefaultColormap(dpy, DefaultScreen(dpy)),
 		   "red", &bgcolor, &bgcolor);
 
-  /* creation des 3 sous fenetres de la fenetre principale */
+  /* creation des sous fenetres de la fenetre principale */
   sfen1 = XCreateSimpleWindow(dpy, fen, 0, 0,
 			      149 + BORDER,
 			      50,
@@ -146,6 +146,9 @@ void fExposeEvent(XExposeEvent *e)
   if(!init){
     init=1;
 
+    /* Ecrire les chaines pour les boutons Submit et Quit lors 
+       du lacement du programme */
+    
     XDrawString(dpy, sfen3, gc,
 		55,
 		30,
@@ -165,16 +168,19 @@ void fButtonPress(XButtonEvent *e, int sock)
   char *err;
 
   if(e->window == sfen1){
+    /* clic sur la sous fenetre de l'identifiant */
     last1 = 1;
     last3 = 0;
     last2 = 0;
   }
   else if(e->window == sfen2){
+    /* clic sur la sous fenetre du mot de passe */
     last1 = 0;
     last2 = 1;
     last3 = 0;
   }
   else if(e->window == sfen3){
+    /* clic sur la sous fenetre du bouton Submit */
     last1 = 0;
     last2 = 0;
     last3 = 1;
@@ -203,6 +209,7 @@ void fButtonPress(XButtonEvent *e, int sock)
     }
   }
   else if(e->window == sfen4){
+    /* clic sur la sous fenetre de bouton Quit */
     write(sock, "QUIT\n", 5);
     XCloseDisplay(dpy);
     exit(0);
@@ -210,6 +217,7 @@ void fButtonPress(XButtonEvent *e, int sock)
   else{
     int i=0;
 
+    /* clic sur l'une des sous fenetre representant un message */
     while(mails[i]){
       if(e->window == mails[i])
 	RETR(sock, i);
@@ -217,14 +225,6 @@ void fButtonPress(XButtonEvent *e, int sock)
       i++;
     }
   }
-
-  /* Debugage */
-  /*if(last1)
-    printf("clic sur fenetre 1\n");
-  else if(last2)
-    printf("clic sur fenetre 2\n");
-  else if(last3)
-  printf("clic sur fenetre 3\n");*/
 }
 
 
@@ -245,16 +245,11 @@ void fKeyPress (XKeyEvent *e)
     buffer2[0] = '\0';
   }
 
-  /* Debugage */
-  /*if(last1)
-    printf("fenetre 1, keycode : %d, chaine : %s\n", e->keycode, c);
-  else if(last2)
-    printf("fenetre 2, keycode : %d, chaine : %s\n", e->keycode, c);
-  else if(last3)
-  printf("fenetre 3, keycode : %d, chaine : %s\n", e->keycode, c);*/
-
   /* afficher la nouvelle chaine */
   if(last1){
+    /* dernier clic sur fenetre de l'identifiant */
+
+    /* pour effacer dernier caractere de l'identifiant */
     if(e->keycode == 59){
       clean(sfen1);
       buffer1[strlen(buffer1)-1] = '\0';
@@ -262,6 +257,7 @@ void fKeyPress (XKeyEvent *e)
     else
       strcat(buffer1, c);
 
+    /* affichange de l'identifiant */
     XDrawString(dpy, sfen1, gc,
 	      25,
 	      30,
@@ -269,10 +265,13 @@ void fKeyPress (XKeyEvent *e)
 	      strlen(buffer1));
   }
   else if(last2){
+    /* dernier clic sur fenetre du mot de passe */
+    
     int i;
     char *f = (char*) malloc(15);
     f[0] = '\0';
 
+    /* pour effacer dernier caractere du mot de passe */
     if(e->keycode == 59){
       clean(sfen2);
       buffer2[strlen(buffer2)-1] = '\0';
@@ -283,6 +282,7 @@ void fKeyPress (XKeyEvent *e)
     for(i=0; i<strlen(buffer2); i++)
       strcat(f, "*");
 
+    /* affichange des caracteres reperensants le mot de passe */
     XDrawString(dpy, sfen2, gc,
 	      25,
 	      30,
@@ -291,6 +291,7 @@ void fKeyPress (XKeyEvent *e)
   }
 }
 
+/* Effacer le contenu de la fenetre w */
 void clean(Window w){
   XUnmapWindow(dpy, w);
 
@@ -303,6 +304,7 @@ void clean(Window w){
   XMapWindow(dpy, w);
 }
 
+/* Effacer le contenu de la fenetre affichant les erreurs lors du Submit */
 void cleanfenErr(){
   XUnmapWindow(dpy, sfen5);
 
@@ -442,6 +444,7 @@ void Top(int sock, char *answer, int nbMessages)
 }
 
 
+/* Affichage du contenu des enetes From et Date dans la sous fenetre */
 void TopAffichage(int nbMessages){
   int i, y = 5;
   XColor bgcolor;

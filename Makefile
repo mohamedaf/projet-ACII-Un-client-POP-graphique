@@ -27,5 +27,17 @@ $(OBJ)/main-pop.o	: $(SRC)/main-pop.c ${INC}/peroraison.h
 $(BIN)/application	: $(OBJ)/main-pop.o $(OBJ)/peroraison.o $(OBJ)/InitConnexion.o $(OBJ)/textuel-pop.o $(OBJ)/clicable-pop.o
 	$(CC) -L$L -l$l -o $(BIN)/application $(OBJ)/main-pop.o $(OBJ)/peroraison.o $(OBJ)/InitConnexion.o $(OBJ)/textuel-pop.o $(OBJ)/clicable-pop.o
 
+testextuel	:
+	php ./serveur/serveur2.php 12345 &
+	make clean
+	make
+	./bin/application -t localhost 12345 < test.txt
+
+testclicable	:
+	php ./serveur/serveur2.php 12345 &
+	make clean
+	make
+	./bin/application -c localhost 12345
+
 clean	:
-	rm -rf ${OBJ}/* ${BIN}/* ${INC}/*.gch
+	rm -rf ${OBJ}/* ${BIN}/* ${INC}/*.gch 0 1.txt

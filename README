@@ -1,0 +1,33 @@
+AFFES Mohamed Amin 3262371
+
+Le serveur utilisé est stocké dans le dossier serveur
+il prend en paramètre le numéro de port
+
+Pour effectuer les tests:
+
+////////////////////////// Partie 1: ///////////////////////////////////
+Dans le dossier principal du projet tapez sur terminal la commande:
+make testextuel
+
+les commandes envoyés au serveur se trouvent dans le fichier "test.txt"
+
+////////////////////////// Partie 2: ///////////////////////////////////
+Dans le dossier principal du projet tapez sur terminal la commande:
+make testclicable
+
+les noms d'utilisateurs et mots de passes disponibles et correctes sont:
+
+USER a@hotmail.fr
+PASS a
+
+USER b@hotmail.fr
+PASS b
+
+USER c@hotmail.fr
+PASS c
+
+USER d@hotmail.fr
+PASS d
+
+////////////////////////// Partie 3: ///////////////////////////////////
+N'a pas été faite.

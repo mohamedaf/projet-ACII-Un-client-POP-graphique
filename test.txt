@@ -1,0 +1,7 @@
+USER a@hotmail.fr
+PASS a
+LIST
+TOP 0
+RETR 0
+QUIT
+

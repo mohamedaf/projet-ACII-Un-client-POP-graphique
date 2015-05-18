@@ -7,15 +7,19 @@ void traitement_RETR(char* answer, char* s)
   const char * ligne = answer;
   int contentType=0, multipart=0, debmess=0, mess=0, c=0;
 
+  /* boucle permettant de lire la reponse du serveur ligne par ligne */
   while(ligne){
     char * nextLine = strchr(ligne, '\n');
     // temporarily terminate the current line
     if (nextLine) *nextLine = '\0';
 
+    /* si un message doit etre lu */
     if(mess){
+      /* ligne vide signalant le debut du message */
       if(!strcmp(ligne,"") && !debmess){
 	debmess=1;
       }
+      /* ligne vide signalant la fin du message */
       else if(!strcmp(ligne,"") && debmess){
 	fclose(f);
 	mess=0;
@@ -23,6 +27,7 @@ void traitement_RETR(char* answer, char* s)
 	contentType=0;
       }
       else if(debmess){
+	/* ecire le message dans le fichier concerne */
 	fputs(ligne, f);
       }
     }
@@ -33,10 +38,12 @@ void traitement_RETR(char* answer, char* s)
       if(!strncmp(ligne+matches[1].rm_so, "multipart",
 		  matches[1].rm_eo-matches[1].rm_so)){
 
+	/* creer le repertoire (cas multipart) */
 	if(mkdir(s, 0777) == -1){
 	  peroraison("fichier textuel-pop.c : fonction textuel_pop : cas RETR multipart",
 		     "erreur creation repertoire multipart\n",1);
 	}
+	/* signaler qu'on est dans un cas multipart */
 	multipart = 1;
       }
       else{
@@ -47,6 +54,7 @@ void traitement_RETR(char* answer, char* s)
 	strcat(s3, s2);
 	strcat(s3, ".txt");
 
+	/* si multipart creer fichier dans le repertoire */
 	if(multipart){
 	  char *s4;
 
@@ -58,10 +66,14 @@ void traitement_RETR(char* answer, char* s)
 	else
 	  f = fopen(s3, "w+");
 
+	/* signaler la lecture d'un message dans la suite */
 	mess=1;
       }
     }
     else if(!contentType){
+      /* pas de content-type, ecrire le message apres detection des lignes vides
+         signalant les début et fin de message, puis quitter lors de la rencontre
+         d'une ligne contenant seulement le caractere "." */
       if(!strcmp(ligne,"") && !debmess){
 	c=1;
 	debmess=1;
@@ -82,6 +94,7 @@ void traitement_RETR(char* answer, char* s)
       }
     }
 
+    /* fin de la reponse du seveur, ont quitte */
     if(!strcmp(ligne, "."))
       break;
 
@@ -103,10 +116,10 @@ void textuel_pop(int sock)
     /* lecture de la requete du client */
     fgets (requete, LINELENGTH, stdin);
 
-    //pour retirer le retour a la ligne a la fin
+    /* pour retirer le retour a la ligne en fin de chaine */
     requete[strlen(requete)-1] = '\0';
     message[0] = '\0';
-
+    
     /* verification et envoi de la requete */
     if(!regexec(&re_user, requete, 3, matches, 0)){
       strcat(message, "USER ");
