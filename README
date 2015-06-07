@@ -1,6 +1,6 @@
 AFFES Mohamed Amin 3262371
 
-Réalisation d'un client POP graphique projet
+Réalisation d'un client POP graphique
 énnoncé du projet :
 https://www-master.ufr-info-p6.jussieu.fr/2014/Un-client-POP-graphique
 
@@ -34,4 +34,4 @@ USER d@hotmail.fr
 PASS d
 
 ////////////////////////// Partie 3: ///////////////////////////////////
-N'a pas été faite.
+N'a pas été faite par manque de temps.
